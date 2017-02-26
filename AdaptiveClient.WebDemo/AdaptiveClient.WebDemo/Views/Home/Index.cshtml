@@ -1,0 +1,34 @@
+@using AdaptiveClient.WebDemo
+@model List<HomeViewModel>
+@{
+    ViewData["Title"] = "AdaptiveClient Simple Web Demo";
+    string title = null;
+}
+
+<style type="text/css">
+    html {
+        background-color: lightyellow;
+    }
+
+    body {
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-size:medium;
+        color:gray;
+    }
+</style>
+
+<h2>AdaptiveClient Simple Web Demo</h2>
+
+@for (int i = 0; i < 2; i++)
+{
+    title = (i == 0) ? "First pass - connect to SQL box on LAN:" : "Second pass - simulate no LAN connectivity, fall back to WebAPI server:";
+    <div>
+        <h3>@title</h3>
+        <p>@Html.DisplayFor(x => x[i].GetAUserResult)</p>
+        <p>@Html.DisplayFor(x => x[i].SaveAUserResult)</p>
+
+    </div>
+}
+<div>
+    <p>@Logger.Message</p>
+</div>
