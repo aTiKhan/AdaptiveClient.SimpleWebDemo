@@ -15,7 +15,7 @@ namespace AdaptiveClient.WebDemo
 {
     public class AutofacHelper
     {
-        public static void RegisterComponents(ContainerBuilder builder, IHttpContextAccessor httpContext)
+        public static void RegisterComponents(ContainerBuilder builder)
         {
             AutofacRegistrationHelper registrationHelper = new AutofacRegistrationHelper(builder);
             IEnumerable<IEndPointConfiguration> endPoints = ReadEndPoints();
@@ -38,7 +38,7 @@ namespace AdaptiveClient.WebDemo
             builder.RegisterType<Demo>();
         }
 
-        public static void RegisterMocks(ContainerBuilder builder, IHttpContextAccessor httpContext)
+        public static void RegisterMocks(ContainerBuilder builder)
         {
             // this method is for mocks - see RegisterComponents for examples of how to register your components with AdaptiveClient.
             AutofacRegistrationHelper registrationHelper = new AutofacRegistrationHelper(builder);

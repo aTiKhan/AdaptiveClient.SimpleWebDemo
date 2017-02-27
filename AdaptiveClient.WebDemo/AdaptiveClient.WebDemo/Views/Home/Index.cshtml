@@ -21,7 +21,7 @@
 
 @for (int i = 0; i < 2; i++)
 {
-    title = (i == 0) ? "First pass - connect to SQL box on LAN:" : "Second pass - simulate no LAN connectivity, fall back to WebAPI server:";
+    title = (i == 0) ? "First pass - connect to SQL box on local area network:" : "Second pass - simulate no LAN connectivity, fall back to WebAPI server:";
     <div>
         <h3>@title</h3>
         <p>@Html.DisplayFor(x => x[i].GetAUserResult)</p>
@@ -30,5 +30,6 @@
     </div>
 }
 <div>
+    <h4>Expected error message when LAN connectivity fails:</h4>
     <p>@Logger.Message</p>
 </div>

@@ -9,20 +9,17 @@ namespace AdaptiveClient.WebDemo.Controllers
 {
     public class HomeController : Controller
     {
-        private IHttpContextAccessor httpContext;
-
-        public HomeController(IHttpContextAccessor httpContext)
+        public HomeController()
         {
-            this.httpContext = httpContext;
         }
 
         public IActionResult Index()
         {
             List<HomeViewModel> viewModels = new List<HomeViewModel>();
-            
+
             // First pass - connect to SQL box on LAN:
 
-            using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterComponents(builder, httpContext)))
+            using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterComponents(builder)))
             {
                 Demo demo = scope.Resolve<Demo>();
                 viewModels.Add(demo.BuildViewModel());
@@ -31,7 +28,7 @@ namespace AdaptiveClient.WebDemo.Controllers
 
             // Second pass - simulate no LAN connectivity, fall back to WebAPI server:
 
-            using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterMocks(builder, httpContext)))
+            using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterMocks(builder)))
             {
                 Demo demo = scope.Resolve<Demo>();
                 viewModels.Add(demo.BuildViewModel());
