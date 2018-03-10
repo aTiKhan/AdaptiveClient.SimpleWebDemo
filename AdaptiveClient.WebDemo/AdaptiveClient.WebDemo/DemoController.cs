@@ -31,6 +31,7 @@ namespace AdaptiveClient.WebDemo
 
         private User GetAUser(int id)
         {
+            // Visual Studio may break on an error here.  This is expected - click continue.
             User user = client.Try(x => x.GetUserByID(id));
             viewModel.GetAUserResult = $"User {user.Name} was found.  EndPoint used was {client.CurrentEndPoint.Name}.";
             return user;
