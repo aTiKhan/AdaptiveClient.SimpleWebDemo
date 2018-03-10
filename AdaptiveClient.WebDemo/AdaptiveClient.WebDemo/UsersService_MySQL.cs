@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AdaptiveClient.WebDemo
 {
-    class UsersService : IUsersService
+    class UsersService_MySQL : IUsersService
     {
         public void SaveUser(User user)
         {
@@ -14,7 +14,7 @@ namespace AdaptiveClient.WebDemo
         public User GetUserByID(int id)
         {
             // call database client here and select...
-            return new User { ID = id, Name = "Bob" };
+            return new User { ID = id, Name = "Bob (retrieved from MySQL)" };
         }
 
         #region IDisposable

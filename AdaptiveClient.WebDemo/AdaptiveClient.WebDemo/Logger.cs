@@ -7,6 +7,11 @@ namespace AdaptiveClient.WebDemo
 {
     public static class Logger
     {
-        public static string Message { get; set; }
+        private static string _Message;
+        public static string Message
+        {
+            get => _Message;
+            set => _Message = value;
+        }
     }
 }

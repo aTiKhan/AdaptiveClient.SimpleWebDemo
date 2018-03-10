@@ -21,16 +21,23 @@ namespace AdaptiveClient.WebDemo.Controllers
 
             using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterComponents(builder)))
             {
-                Demo demo = scope.Resolve<Demo>();
+                DemoController demo = scope.Resolve<DemoController>();
+                viewModels.Add(demo.BuildViewModel());
+            }
+
+            // Second pass
+            using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterMySQLMocks(builder)))
+            {
+                DemoController demo = scope.Resolve<DemoController>();
                 viewModels.Add(demo.BuildViewModel());
             }
 
 
-            // Second pass - simulate no LAN connectivity, fall back to WebAPI server:
+            // Third pass - simulate no LAN connectivity, fall back to WebAPI server:
 
-            using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterMocks(builder)))
+            using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterFallbackMocks(builder)))
             {
-                Demo demo = scope.Resolve<Demo>();
+                DemoController demo = scope.Resolve<DemoController>();
                 viewModels.Add(demo.BuildViewModel());
             }
 

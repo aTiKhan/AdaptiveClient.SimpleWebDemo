@@ -13,6 +13,33 @@ using LeaderAnalytics.AdaptiveClient;
 
 namespace AdaptiveClient.WebDemo
 {
+
+    public static class DataProvider
+    {
+        public static string MSSQL = "MSSQL";
+        public static string MySQL = "MySQL";
+        //public static string Oracle = "Oracle";
+    }
+
+    public enum API_Name
+    {
+        UsersAPI
+        // ,YourAPIName
+    }
+
+
+    public static class EndPointType
+    {
+        public const string InProcess = "InProcess";
+        public const string HTTP = "HTTP";
+        public const string WCF = "WCF";
+        public const string ESB = "ESB";
+        public const string File = "File";
+        public const string FTP = "FTP";
+    }
+
+
+
     public class AutofacHelper
     {
         public static void RegisterComponents(ContainerBuilder builder)
@@ -29,16 +56,25 @@ namespace AdaptiveClient.WebDemo
             registrationHelper.RegisterEndPoints(endPoints);
 
             // register clients
+
+            // We can register a url as a connection string.  If we pass AdaptiveClient an EndPoint of type HTTP it will return an instance of UsersWebAPIClient
             registrationHelper.Register<UsersWebAPIClient, IUsersService>(EndPointType.HTTP, apiName);
-            registrationHelper.Register<UsersService, IUsersService>(EndPointType.InProcess, apiName);
+
+            // If our EndPoint has a DataProvider type of MSSQL, AdaptiveClient will return an instance of UsersService_MSSQL which (fictitiously) contains SQL for Microsoft SQL Server.
+            registrationHelper.Register<UsersService_MSSQL, IUsersService>(EndPointType.InProcess, apiName, DataProvider.MSSQL);
+
+            // If our EndPoint has a DataProvider type of MySQL, AdaptiveClient will return an instance of UsersService_MySQL which (fictitiously) contains SQL for MySQL.
+            registrationHelper.Register<UsersService_MySQL, IUsersService>(EndPointType.InProcess, apiName, DataProvider.MySQL);
 
             // register logger (optional)
             registrationHelper.RegisterLogger(logMessage => Logger.Message = logMessage);
 
-            builder.RegisterType<Demo>();
+            builder.RegisterType<DemoController>();
         }
 
-        public static void RegisterMocks(ContainerBuilder builder)
+        // Mocks for the demo
+
+        public static void RegisterFallbackMocks(ContainerBuilder builder)
         {
             // this method is for mocks - see RegisterComponents for examples of how to register your components with AdaptiveClient.
             AutofacRegistrationHelper registrationHelper = new AutofacRegistrationHelper(builder);
@@ -49,9 +85,22 @@ namespace AdaptiveClient.WebDemo
             var usersServiceMock = new Mock<IUsersService>();
             usersServiceMock.Setup(x => x.SaveUser(It.IsAny<User>())).Throws(new Exception("Cant find database server."));
             usersServiceMock.Setup(x => x.GetUserByID(It.IsAny<int>())).Throws(new Exception("Cant find database server."));
-            builder.RegisterInstance(usersServiceMock.Object).Keyed<IUsersService>(EndPointType.InProcess);
+            builder.RegisterInstance(usersServiceMock.Object).Keyed<IUsersService>(EndPointType.InProcess+DataProvider.MSSQL);
             registrationHelper.RegisterLogger(logMessage => Logger.Message = logMessage);
-            builder.RegisterType<Demo>();
+            builder.RegisterType<DemoController>();
+        }
+
+        public static void RegisterMySQLMocks(ContainerBuilder builder)
+        {
+            AutofacRegistrationHelper registrationHelper = new AutofacRegistrationHelper(builder);
+            IEnumerable<IEndPointConfiguration> endPoints = ReadEndPoints().Where(x => x.ProviderName != DataProvider.MSSQL);
+            string apiName = API_Name.UsersAPI.ToString();
+            registrationHelper.RegisterEndPoints(endPoints);
+            registrationHelper.Register<UsersWebAPIClient, IUsersService>(EndPointType.HTTP, apiName);
+            registrationHelper.Register<UsersService_MSSQL, IUsersService>(EndPointType.InProcess, apiName, DataProvider.MSSQL);
+            registrationHelper.Register<UsersService_MySQL, IUsersService>(EndPointType.InProcess, apiName, DataProvider.MySQL);
+            registrationHelper.RegisterLogger(logMessage => Logger.Message = logMessage);
+            builder.RegisterType<DemoController>();
         }
 
         private static IEnumerable<IEndPointConfiguration> ReadEndPoints()

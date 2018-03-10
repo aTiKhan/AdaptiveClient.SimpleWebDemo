@@ -19,9 +19,21 @@
 
 <h2>AdaptiveClient Simple Web Demo</h2>
 
-@for (int i = 0; i < 2; i++)
+@for (int i = 0; i < 3; i++)
 {
-    title = (i == 0) ? "First pass - connect to SQL box on local area network:" : "Second pass - simulate no LAN connectivity, fall back to WebAPI server:";
+    switch (i)
+    {
+        case 0:
+            title = "First pass - connect to Microsoft SQL box on local area network:";
+            break;
+        case 1:
+            title = "Second pass - connecto to MySQL box on local area network:";
+            break;
+        case 2:
+            title = "Third pass - simulate fall back to WebAPI server:";
+            break;
+
+    }
     <div>
         <h3>@title</h3>
         <p>@Html.DisplayFor(x => x[i].GetAUserResult)</p>
