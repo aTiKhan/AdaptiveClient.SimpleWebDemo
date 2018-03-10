@@ -21,14 +21,14 @@ namespace AdaptiveClient.WebDemo.Controllers
 
             using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterComponents(builder)))
             {
-                DemoController demo = scope.Resolve<DemoController>();
+                Demo demo = scope.Resolve<Demo>();
                 viewModels.Add(demo.BuildViewModel());
             }
 
             // Second pass
             using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterMySQLMocks(builder)))
             {
-                DemoController demo = scope.Resolve<DemoController>();
+                Demo demo = scope.Resolve<Demo>();
                 viewModels.Add(demo.BuildViewModel());
             }
 
@@ -37,7 +37,7 @@ namespace AdaptiveClient.WebDemo.Controllers
 
             using (var scope = new ContainerBuilder().Build().BeginLifetimeScope(builder => AutofacHelper.RegisterFallbackMocks(builder)))
             {
-                DemoController demo = scope.Resolve<DemoController>();
+                Demo demo = scope.Resolve<Demo>();
                 viewModels.Add(demo.BuildViewModel());
             }
 

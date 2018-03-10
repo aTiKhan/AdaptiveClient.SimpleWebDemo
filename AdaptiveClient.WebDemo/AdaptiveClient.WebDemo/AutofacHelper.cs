@@ -69,7 +69,7 @@ namespace AdaptiveClient.WebDemo
             // register logger (optional)
             registrationHelper.RegisterLogger(logMessage => Logger.Message = logMessage);
 
-            builder.RegisterType<DemoController>();
+            builder.RegisterType<Demo>();
         }
 
         // Mocks for the demo
@@ -87,7 +87,7 @@ namespace AdaptiveClient.WebDemo
             usersServiceMock.Setup(x => x.GetUserByID(It.IsAny<int>())).Throws(new Exception("Cant find database server."));
             builder.RegisterInstance(usersServiceMock.Object).Keyed<IUsersService>(EndPointType.InProcess+DataProvider.MSSQL);
             registrationHelper.RegisterLogger(logMessage => Logger.Message = logMessage);
-            builder.RegisterType<DemoController>();
+            builder.RegisterType<Demo>();
         }
 
         public static void RegisterMySQLMocks(ContainerBuilder builder)
@@ -100,7 +100,7 @@ namespace AdaptiveClient.WebDemo
             registrationHelper.Register<UsersService_MSSQL, IUsersService>(EndPointType.InProcess, apiName, DataProvider.MSSQL);
             registrationHelper.Register<UsersService_MySQL, IUsersService>(EndPointType.InProcess, apiName, DataProvider.MySQL);
             registrationHelper.RegisterLogger(logMessage => Logger.Message = logMessage);
-            builder.RegisterType<DemoController>();
+            builder.RegisterType<Demo>();
         }
 
         private static IEnumerable<IEndPointConfiguration> ReadEndPoints()

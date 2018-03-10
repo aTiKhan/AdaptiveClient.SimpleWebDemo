@@ -6,12 +6,12 @@ using LeaderAnalytics.AdaptiveClient;
 namespace AdaptiveClient.WebDemo
 {
 
-    public class DemoController
+    public class Demo
     {
         private IAdaptiveClient<IUsersService> client;
         private HomeViewModel viewModel;
 
-        public DemoController(IAdaptiveClient<IUsersService> client)
+        public Demo(IAdaptiveClient<IUsersService> client)
         {
             this.client = client;
             this.viewModel = new HomeViewModel();
