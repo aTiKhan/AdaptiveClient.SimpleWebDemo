@@ -1,0 +1,45 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "AdaptiveClient Simple Web Demo";
+    string title = null;
+}
+
+<style type="text/css">
+    html, body {
+        background-color: lightyellow;
+    }
+
+    body {
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-size: medium;
+        color: gray;
+    }
+    
+</style>
+
+<h2>AdaptiveClient Simple Web Demo</h2>
+
+<div>
+    <form method="post">
+        <div class="form-group">
+            <label class="col-form-label">Data Source: </label>
+            <select asp-for="SelectedEndPointName" asp-items="@Model.EndPoints.Select(x => new SelectListItem {Text = x.Name, Value = x.Name })" class="form-control" style="max-width:250px;" onchange="form.submit()">
+            </select>
+        </div>
+    </form>
+</div>
+
+<div style="margin-top:60px;padding:12px;border:solid 1px silver;">
+    <div>
+        <h3>Demo User</h3>
+    </div>
+    <div>
+        <h6>@Model.DemoUser.Name</h6>
+    </div>
+
+    <div>
+        <h4>Expected error message when LAN connectivity fails:</h4>
+        <label>@Logger.Message</label>
+    </div>
+</div>

@@ -8,30 +8,13 @@ namespace AdaptiveClient.WebDemo
     {
         public void SaveUser(User user)
         {
-           // call database client here and insert....
+           // call database client here and insert using MySQL syntax....
         }
 
         public User GetUserByID(int id)
         {
-            // call database client here and select...
+            // call database client here and select using MySQL syntax...
             return new User { ID = id, Name = "Bob (retrieved from MySQL)" };
         }
-
-        #region IDisposable
-        private bool disposed = false; 
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                disposed = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-        #endregion
     }
 }

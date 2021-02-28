@@ -1,46 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 
 namespace AdaptiveClient.WebDemo
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public IConfiguration Configuration { get; }
+
+
+        public Startup(IConfiguration configuration)
         {
-            // Add framework services.
-            services.AddMvc();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            // Autofac
-            ContainerBuilder builder = new ContainerBuilder();
-
-            builder.Populate(services);
-            var container = builder.Build();
-            return container.Resolve<IServiceProvider>();
+            Configuration = configuration;
         }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRazorPages();
+        }
+
+        // https://autofaccn.readthedocs.io/en/latest/integration/aspnetcore.html
+        // ConfigureContainer is where you can register things directly
+        // with Autofac. This runs after ConfigureServices so the things
+        // here will override registrations made in ConfigureServices.
+        // Don't build the container; that gets done for you by the factory.
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            // Register your own things directly with Autofac here. Don't
+            // call builder.Populate(), that happens in AutofacServiceProviderFactory
+            // for you.
+            builder.RegisterModule(new AutofacModule());
+        }
+
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseStaticFiles();
-            app.UseMvc(routes =>
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+            else
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
-        }
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
 
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapRazorPages());
+        }
     }
 }
